@@ -10,3 +10,6 @@
 
 (method stringify []
     (Json.stringify (for elem elements (elem.stringify))))
+
+(method iterator []
+    (elements.iterator))
