@@ -1,0 +1,49 @@
+(var &mut :String projectObsFolder null)
+(var &mut :Bool obsIsRecording false)
+
+(function obsExe []
+    (case (Sys.systemName)
+        ("Linux" "obs")
+        (otherwise (throw "OBS executable not defined for $(Sys.systemName)"))))
+
+(function :Void startObs []
+    (when obsIsRecording
+        (print "Warning! OBS is already recording!")
+        (return))
+    (if projectObsFolder
+            (let [os (Sys.systemName)
+                    profileDir "${projectObsFolder}/${os}_Profile"
+                    sceneCollectionFile "${projectObsFolder}/${os}_SceneCollection.json"]
+                (if (and (sys.FileSystem.exists profileDir) (sys.FileSystem.exists sceneCollectionFile))
+                        (when (Prelude.tryProcess (obsExe) ["--version"]
+                                    ->error {
+                                        (print "error trying to run OBS: $error")
+                                    })
+                            
+                            (new sys.io.Process
+                                (obsExe)
+                                [
+                                    "--profile"
+                                    profileDir
+                                    "--collection"
+                                    sceneCollectionFile
+                                    "--scene"
+                                    "Scene"
+                                    "--startrecording"
+                                    "--minimize-to-tray"
+                                    "--multi"
+                                ])
+                            (set obsIsRecording true))
+                    (print "OBS profile and scene collection not found for ${os} in ${projectObsFolder}. Will not be recording")))
+        (print "OBSTools.projectObsFolder is not set. Will not be recording")))
+
+(function :Void stopObs []
+    (#when debug
+        (when obsIsRecording
+            // kill the obs process
+            (case (Sys.systemName)
+                ("Linux"
+                    (doFor id (reverse (.split (assertProcess "pgrep" ["obs"]) "\n"))
+                        (assertProcess "kill" [id])))
+                (otherwise (throw "OBS executable not defined for $(Sys.systemName)"))))))
+
