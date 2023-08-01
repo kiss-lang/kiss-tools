@@ -29,3 +29,8 @@
         (set timers [])
         (doFor timer oldTimers
             (delay timer.f timer.duration))))
+
+(function stopAll []
+    (doFor timer timers
+        (timer.t.stop))
+    (set timers []))
