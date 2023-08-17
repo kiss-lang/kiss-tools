@@ -13,6 +13,26 @@
         (timers.push wrapped)
         wrapped))
 
+(function :WrappedTimer interval [:Void->Void f :Float sec &opt :Int numberOfTimes]
+    (let [&mut :WrappedTimer wrapped null
+            wrappedF
+                ->:Void {
+                    (when (and numberOfTimes (<= numberOfTimes 0))
+                        (stop wrapped)
+                        (return))
+                    (f)
+                    (when numberOfTimes
+                        (-= numberOfTimes 1))
+                    // Maintain the original wrapper object as a reference to the current iteration of the interval:
+                    (let [newWrapped (interval f sec numberOfTimes)]
+                        (set wrapped.t newWrapped.t)
+                        (set wrapped.f newWrapped.f)
+                        (set wrapped.startTime newWrapped.startTime)
+                        (set wrapped.duration newWrapped.duration))
+                }]
+        (set wrapped (delay wrappedF sec))
+        wrapped))
+
 (function stop [:WrappedTimer timer]    
     (timer.t.stop)
     (timers.remove timer))
@@ -28,6 +48,7 @@
     (let [oldTimers timers]
         (set timers [])
         (doFor timer oldTimers
+            // This delays with f instead of wrappedF because it will be re-wrapped by delay
             (delay timer.f timer.duration))))
 
 (function stopAll []
