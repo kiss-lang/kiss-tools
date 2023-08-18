@@ -15,7 +15,10 @@
     (unless (FileSystem.exists jsonPath)    
         (File.saveContent jsonPath "{}"))
 
-    (_parseFrom (File.getContent jsonPath)))
+    (try
+            (_parseFrom (File.getContent jsonPath))
+        (catch [:String message]
+            (throw "JsonParser error loading ${jsonPath}: ${message}"))))
 
 (method put [:String key :T value]
     (dictSet m key value)
