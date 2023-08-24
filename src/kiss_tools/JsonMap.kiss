@@ -13,7 +13,7 @@
                 (json.split "\n")]
         (lines.shift) // {
         (lines.pop) // }
-        (+ "{\n" (.join (sort lines) "\n") "\n}")))
+        (+ "{\n" (.join (sort (for line lines (if (line.endsWith ",") (substr line 0 -1) line))) ",\n") "\n}")))
 
 (defNew [&prop :String jsonPath &prop :T defaultVal]
     [:Map<String,T> m (new Map)]

@@ -10,6 +10,7 @@ import haxe.Json;
 import haxe.DynamicAccess;
 import sys.io.File;
 import sys.FileSystem;
+using StringTools;
 
 typedef Jsonable<T> = {
     function stringify():String;
