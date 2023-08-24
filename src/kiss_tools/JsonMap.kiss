@@ -4,10 +4,16 @@
             (dictSet m key (defaultVal.parse representation)))))
 
 (method stringify []
-    (Json.stringify
-        (for =>k v m =>k (v.stringify))
-        null
-        "\t"))
+    (let [json
+                (Json.stringify
+                    (for =>k v m =>k (v.stringify))
+                    null
+                    "\t")
+            lines
+                (json.split "\n")]
+        (lines.shift) // {
+        (lines.pop) // }
+        (+ "{\n" (.join (sort lines) "\n") "\n}")))
 
 (defNew [&prop :String jsonPath &prop :T defaultVal]
     [:Map<String,T> m (new Map)]
