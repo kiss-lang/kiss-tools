@@ -37,3 +37,9 @@
 
 (method exists [:String key]
     (m.exists key))
+
+(method iterator []
+    (m.iterator))
+
+(method keyValueIterator []
+    (m.keyValueIterator))
