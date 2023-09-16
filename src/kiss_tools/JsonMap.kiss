@@ -41,5 +41,8 @@
 (method iterator []
     (m.iterator))
 
+(method keys []
+    (m.keys))
+
 (method keyValueIterator []
     (m.keyValueIterator))
