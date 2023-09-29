@@ -1,9 +1,11 @@
 (var &mut :String projectObsFolder null)
 (var &mut :Bool obsIsRecording false)
+(var &mut :sys.io.Process obsProcess null)
 
 (function obsExe []
     (case (Sys.systemName)
         ("Linux" "obs")
+        ("Windows" #"C:\Program Files\obs-studio\bin\64bit\obs64.exe"#)
         (otherwise (throw "OBS executable not defined for $(Sys.systemName)"))))
 
 (function :Void startObs []
@@ -12,27 +14,35 @@
         (return))
     (if projectObsFolder
             (let [os (Sys.systemName)
+                    exe (obsExe)
+                    dirOfExe (haxe.io.Path.directory exe)
                     profileDir "${projectObsFolder}/${os}_Profile"
                     sceneCollectionFile "${projectObsFolder}/${os}_SceneCollection.json"]
                 (if (and (sys.FileSystem.exists profileDir) (sys.FileSystem.exists sceneCollectionFile))
-                        (when (Prelude.tryProcess (obsExe) ["--version"]
+                        (when (Prelude.tryProcess exe ["--version"]
                                     ->error {
                                         (print "error trying to run OBS: $error")
-                                    })
+                                    }
+                                    []
+                                    true
+                                    (when dirOfExe dirOfExe))
                             
-                            (new sys.io.Process
-                                (obsExe)
-                                [
-                                    "--profile"
-                                    profileDir
-                                    "--collection"
-                                    sceneCollectionFile
-                                    "--scene"
-                                    "Scene"
-                                    "--startrecording"
-                                    "--minimize-to-tray"
-                                    "--multi"
-                                ])
+                            // This is required to find the local.ini file:
+                            (when dirOfExe (Sys.setCwd dirOfExe))
+                            (set obsProcess
+                                (new sys.io.Process
+                                    exe
+                                    [
+                                        "--profile"
+                                        profileDir
+                                        "--collection"
+                                        sceneCollectionFile
+                                        "--scene"
+                                        "Scene"
+                                        "--startrecording"
+                                        "--minimize-to-tray"
+                                        "--multi"
+                                    ]))
                             (set obsIsRecording true))
                     (print "OBS profile and scene collection not found for ${os} in ${projectObsFolder}. Will not be recording")))
         (print "OBSTools.projectObsFolder is not set. Will not be recording")))
@@ -41,10 +51,6 @@
     (#when debug
         (when obsIsRecording
             // kill the obs process
-            (case (Sys.systemName)
-                ("Linux"
-                    (doFor id (reverse (.split (assertProcess "pgrep" ["obs"]) "\n"))
-                        (assertProcess "kill" [id])))
-                (otherwise (throw "OBS executable not defined for $(Sys.systemName)")))
+            (obsProcess.kill)
             (set obsIsRecording false))))
 
