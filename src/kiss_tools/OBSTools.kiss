@@ -28,6 +28,7 @@
                                     (when dirOfExe dirOfExe))
                             
                             // This is required to find the local.ini file:
+                            (localVar lastCwd (Sys.getCwd))
                             (when dirOfExe (Sys.setCwd dirOfExe))
                             (set obsProcess
                                 (new sys.io.Process
@@ -43,6 +44,7 @@
                                         "--minimize-to-tray"
                                         "--multi"
                                     ]))
+                            (when dirOfExe (Sys.setCwd lastCwd))
                             (set obsIsRecording true))
                     (print "OBS profile and scene collection not found for ${os} in ${projectObsFolder}. Will not be recording")))
         (print "OBSTools.projectObsFolder is not set. Will not be recording")))
