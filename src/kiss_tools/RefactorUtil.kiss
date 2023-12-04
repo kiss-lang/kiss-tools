@@ -12,3 +12,11 @@
                 ((exprOr var prop localVar) true)
                 (_ false)) "the first argument to defAndReturn must be a symbol: var, prop, or localVar")
     `{(,type ,name ,value) ,(b.symbol (symbolNameValue name true true))})
+
+(defMacro quickToggle [toggleFlag &body body]
+    `{
+        (savedVar :Bool ,toggleFlag true)
+        (set ,toggleFlag ,toggleFlag)
+        (when ,toggleFlag
+            ,@body)
+    })
