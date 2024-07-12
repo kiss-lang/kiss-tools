@@ -1,4 +1,4 @@
-package hollywoo;
+package kiss_tools;
 
 import kiss.Prelude;
 import kiss.List;
