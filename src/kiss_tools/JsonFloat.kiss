@@ -1,0 +1,4 @@
+(defNew [&prop :Float value])
+
+(method stringify [] "$value")
+(method parse [:String data] (new JsonFloat (Std.parseFloat data)))
