@@ -1,0 +1,4 @@
+(defNew [&prop :Bool value])
+
+(method stringify [] (if value "true" "false"))
+(method parse [:String data] (new JsonBool ?(= data "true")))
