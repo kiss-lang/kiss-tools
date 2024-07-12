@@ -3,7 +3,7 @@
 
 (method parse [:String representation]
     (let [:Array<String> arr (Json.parse representation)]
-        (new JsonableArray<T>  
+        (new JsonArray<T>  
             (for elem arr
                 (defaultVal.parse elem))
             defaultVal)))

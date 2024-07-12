@@ -5,4 +5,4 @@ import kiss.List;
 import haxe.Json;
 
 @:build(kiss.Kiss.build())
-class JsonableString {}
+class JsonString {}

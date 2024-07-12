@@ -1,7 +1,7 @@
 (import sys.io.File)
 (import sys.FileSystem)
 (import kiss_tools.JsonMap)
-(import kiss_tools.JsonableArray)
+(import kiss_tools.JsonArray)
 
 // Test FuzzyJson
 (loadFrom "kiss-tools" "src/kiss_tools/FuzzyJson.kiss")
@@ -18,11 +18,11 @@
 (assertThrowsAtCompileTime (getFuzzyJson "dogs" "Rangie"))
 
 
-// Test JsonMap<JsonableArray>
+// Test JsonMap<JsonArray>
 (var TEST_JSON_FILE "testJsonFile.json")
 
 (File.saveContent TEST_JSON_FILE (File.getContent "test/map-start.json"))
-(let [jsonMap (new JsonMap<JsonableArray<TestJsonable>> TEST_JSON_FILE (new JsonableArray<TestJsonable>> [] (new TestJsonable "")))
+(let [jsonMap (new JsonMap<JsonArray<TestJsonable>> TEST_JSON_FILE (new JsonArray<TestJsonable>> [] (new TestJsonable "")))
         a (jsonMap.get "a")
         aString (a.elements.toString)
         b (jsonMap.get "b")
