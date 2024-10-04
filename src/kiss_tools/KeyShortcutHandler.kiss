@@ -1,7 +1,7 @@
 (prop :PrefixMap<T> rootMap (new Map))
 (prop &mut :PrefixMap<T> currentMap null)
 
-(prop &mut :String cancelKey null)
+(prop &mut :String cancelKey "escape")
 (prop &mut :PrefixMapHandler<T> onSelectPrefixMap null)
 (prop &mut :ItemHandler<T> onSelectItem null)
 (prop &mut :FinishHandler onFinishOrCancel null)
