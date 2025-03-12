@@ -73,6 +73,7 @@
 
 (method :Void registerShortcut [keys description item &opt :Bool force :PrefixMap<T> prefixMap]
     (unless prefixMap (set prefixMap rootMap))
+    (unless keys (return))
     (let [firstKey (keys.shift)]
         (cond 
             ((and !force (or (prefixMap.exists firstKey) (= firstKey cancelKey)))
